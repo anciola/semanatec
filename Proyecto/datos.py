@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+from sklearn.cluster import KMeans
 
 # print('Con CSV:')
 # with open('sp_data.csv') as csv_file:
@@ -50,8 +51,6 @@ print("la media fue", df["tempo"].mean())
 print("la mediana fue",df["tempo"].median())
 print("la desviacion estandar fue de",df["tempo"].std())
 
-# df= df[df["duration_ms"]<=320000]
-# df= df[df["duration_ms"]>99000]
 
 bins = np.arange(0, df.duration_ms.max()+1.5)-0.5
 bins = np.arange(0, 5 +1.5)-0.5
@@ -71,7 +70,25 @@ print(df.corr())
 
 plt.figure(figsize=(15,5))
 sns.heatmap(df.corr())
+plt.show()
 
 plt.figure(figsize=(15,5))
 column = df.corr()[["liked"]].sort_values(by="liked", ascending = False)
 sns.heatmap(column, vmin=-1, vmax=1, annot=True)
+plt.show()
+
+test = df[["energy","danceability"]]
+test = test.dropna(axis=0, how = 'any')
+
+kmeans = KMeans(n_clusters=3).fit(test)
+centroids = kmeans.cluster_centers_
+print(centroids)
+cla = kmeans.predict(test)
+
+
+plt.scatter(df["energy"],df["danceability"],c=cla)
+for i in range(len(centroids)):
+    plt.scatter(centroids[i][0], centroids[i][1], marker="*",c="red")
+plt.ylabel("danceability")
+plt.xlabel("energy")
+plt.show()
