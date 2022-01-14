@@ -77,18 +77,18 @@ column = df.corr()[["liked"]].sort_values(by="liked", ascending = False)
 sns.heatmap(column, vmin=-1, vmax=1, annot=True)
 plt.show()
 
-test = df[["energy","danceability"]]
+test = df[["tempo","danceability"]]
 test = test.dropna(axis=0, how = 'any')
 
-kmeans = KMeans(n_clusters=3).fit(test)
+kmeans = KMeans(n_clusters=7).fit(test)
 centroids = kmeans.cluster_centers_
 print(centroids)
 cla = kmeans.predict(test)
 
 
-plt.scatter(df["energy"],df["danceability"],c=cla)
+plt.scatter(df["tempo"],df["danceability"],c=cla)
 for i in range(len(centroids)):
     plt.scatter(centroids[i][0], centroids[i][1], marker="*",c="red")
 plt.ylabel("danceability")
-plt.xlabel("energy")
+plt.xlabel("tempo")
 plt.show()
